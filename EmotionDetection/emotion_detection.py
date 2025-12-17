@@ -3,9 +3,17 @@ import requests
 import json
 
 def emotion_detector(text):
+    # Prebuild the empty result for blank input
+    empty_result = {
+        "anger": 0.0,
+        "disgust": 0.0,
+        "fear": 0.0,
+        "joy": 0.0,
+        "sadness": 0.0,
+        "dominant_emotion": None,
+    }
 
     text_to_analyze = text
-    #print(f"Analyzing: {text}")
     url = "https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict"
     headers = {
         "grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock",
@@ -19,6 +27,9 @@ def emotion_detector(text):
 
     # Make the POST request
     response = requests.post(url, headers=headers, json=payload, timeout=15)
+    if response.status_code == 400:
+        return (empty_result)
+
     data = response.json()
     emotion_block = data["emotionPredictions"][0]["emotion"]
 
@@ -40,11 +51,7 @@ def emotion_detector(text):
         "dominant_emotion": dominant_emotion,
     }
 
-    #Not returning a pretty printed string because it makes unit tests harder
-    #return json.dumps(result, indent=2)
-    return result
-
-
+    return (result)
 
 if __name__ == "__main__":
     sample = "I love this new technology."

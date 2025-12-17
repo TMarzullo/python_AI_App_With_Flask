@@ -26,6 +26,9 @@ def emotionDetector():
 
     result = emotion_detector(text or "")
 
+    if result.get("dominant_emotion") is None:
+        return Response("Invalid text! Please try again!", 200, mimetype="text/plain")
+
     # Build the output
     message = (
         "For the given statement, the system response is "
@@ -37,7 +40,7 @@ def emotionDetector():
         f"The dominant emotion is {result['dominant_emotion']}."
     )
 
-    return Response(message, mimetype="text/plain")
+    return Response(message, 200, mimetype="text/plain")
 
 if __name__ == "__main__":
     # Run on localhost:5000

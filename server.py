@@ -1,4 +1,6 @@
 
+"""Flask server that exposes the emotion detection UI and endpoint."""
+
 from flask import Flask, render_template, request, Response
 from EmotionDetection.emotion_detection import emotion_detector
 
@@ -11,11 +13,13 @@ app = Flask(
 # Serve the provided UI
 @app.route("/")
 def index():
+    """Render the application index page."""
     return render_template("index.html")
 
 # Ensure the Flask decorator path is /emotionDetector
 @app.route("/emotionDetector", methods=["GET", "POST"])
-def emotionDetector():
+def emotionDetector(): # pylint: disable=invalid-name
+    """Handle GET/POST for /emotionDetector, call emotion_detector, return text/plain."""
     # Accept text either as a GET query param, JSON body, or form field
     text = request.args.get("textToAnalyze")
     if not text and request.is_json:
